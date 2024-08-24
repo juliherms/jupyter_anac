@@ -1,0 +1,63 @@
+# Arquivos/diretórios Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+
+# Virtualenv
+venv/
+.env/
+*.env
+
+# Cache de pacotes e pip
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg-info/
+.eggs/
+
+# Arquivos de configuração do IDE
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Logs e dumps
+*.log
+*.out
+*.err
+
+# Configurações de depuração e profiling
+*.prof
+*.lprof
+*.coverage
+.cache/
+
+# Arquivos de banco de dados
+*.sqlite3
+
+# Módulos e pacotes compilados
+build/
+dist/
+*.egg
+*.whl
+
+# Arquivos temporários e backups
+*.bak
+*.swp
+*.tmp
+*.temp
+*~
+
+# Mypy type checker
+.mypy_cache/
+
+# Pyre type checker
+.pyre/
+
+# Testes
+.pytest_cache/
+.tox/
+.nox/
+
+# Jupyter Notebook
+.ipynb
