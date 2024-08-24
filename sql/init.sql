@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Anac (
     municipio varchar(50),
     uf varchar(30),
     regiao varchar(30),
-    nome_do_fabricante(100)
+    nome_do_fabricante varchar(100)
 )
 
 insert into anac (
