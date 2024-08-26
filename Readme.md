@@ -5,4 +5,5 @@
 -  pip install psycopg2 # Para conexão como banco de dados postgreSQL
 -  pip install openpyxl # Para trabalhar com arquivos Excel (xlsx)
 -  pip install pandas # Para manipulação e análise de dados (df)
+-  pip install sqlalchemy # Para mapeamento de objetos - ORM
 

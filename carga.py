@@ -3,7 +3,6 @@
 
 # %%
 import pandas as pd
-import psycopg2
 
 # pd.set_option('display.max_columns', None) # Exibe todas as colunas
 
@@ -17,55 +16,55 @@ df = df[colunas]
 # reonmeia das colunas
 df.rename(columns={'Classificacao_da_Ocorrência':'Classificacao_da_Ocorrencia'}, inplace=True)
 
+# Converte a ocorrencia para datetime
+df['Data_da_Ocorrencia'] = pd.to_datetime(df['Data_da_Ocorrencia'])
 # df.head(3)
+df.dtypes
+
+from datetime import datetime
+ano_atual = datetime.now().year
+# Filtra o dataframe de acordo com o ano atual
+df = df[df['Data_da_Ocorrencia'].dt.year == ano_atual]
+
 
 
 # %% [markdown]
 # Realiza a configuração e conexão com o banco de dados e faz a carga dos dados extraídos do JSON
 
 # %%
+from sqlalchemy import create_engine, Integer, String, Date, VARCHAR, text
+
 # Parâmetros de conexão
-dbname    = 'dados'
+dbname    = 'postgres'
 user      = 'postgres'
 password  = '12345'
 host      = 'localhost'
 port      = '5432'
 
-conn = psycopg2.connect(dbname=dbname,
-                        user=user,
-                        password=password,
-                        host=host,
-                        port=port)
-cur = conn.cursor()
-cur.execute('delete from anac')
+# Connection string
+connection_string = f'postgresql://{user}:{password}@{host}:{port}/{dbname}'
 
-for indice,coluna in df.iterrows():
-    cur.execute("""
-                insert into anac (
-                    numero_da_ocorrencia,
-                    classificacao_da_ocorrencia,
-                    data_da_ocorrencia,
-                    municipio,
-                    uf,
-                    regiao,
-                    nome_do_fabricante
-                ) VALUES (%s,%s,%s,%s,%s,%s,%s) 
-                """,(
-                    coluna["Numero_da_Ocorrencia"],
-                    coluna["Classificacao_da_Ocorrencia"],
-                    coluna["Data_da_Ocorrencia"],
-                    coluna["Municipio"],
-                    coluna["UF"],
-                    coluna["Regiao"],
-                    coluna["Nome_do_Fabricante"],
-                    )
-                )
+# Create connection wiht sqlalchemy
+engine = create_engine(connection_string)
 
-conn.commit()
+table_name = "anac_sql"
 
-# %%
-# fecha o cursor e a conexão
-cur.close()
-conn.close()
+# Atualiza os dados do ano atual
+cursor = engine.connect()
+delete = text(f'DELETE FROM public.{table_name} WHERE EXTRACT(YEAR FROM "Data_da_Ocorrencia") = {ano_atual}')
+cursor.execute(delete)
+cursor.commit()
+
+df.to_sql(table_name, engine, index=False, if_exists='append', dtype={
+    'Numero_da_Ocorrencia': Integer,
+    'Classificacao_da_Ocorrencia': VARCHAR(50),
+    'Data_da_Ocorrencia': Date
+})
+# replace = sobrescreve toda a tabela
+# append = adiciona os dados ao final da tabela
+
+engine.dispose()
+cursor.close()
+
 
 
