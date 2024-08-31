@@ -61,3 +61,6 @@ dist/
 
 # Jupyter Notebook
 .ipynb
+
+# arquivos pessoais
+/data
